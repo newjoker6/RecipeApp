@@ -16,8 +16,9 @@ var data = {
 }
 
 var recipe = {
-	"FoodImage": ["res://icon.png"],
-	"Name": ["My Recipe"]
+	"FoodImage": [],
+	"Name": [],
+	"Steps": []
 }
 
 
@@ -30,7 +31,6 @@ func _ready():
 	dir.copy("res://Images/Background01.png", "user://Background01.png")
 	dir.copy("res://Images/Background02.png", "user://Background02.png")
 	dir.copy("res://Images/Logout.png", "user://Logout.png")
-
 
 
 
@@ -85,7 +85,7 @@ func Create_Colour_Picker():
 
 
 func text_fields():
-	var theme = load("res://Themes/ButtonTheme.tres")
+	var theme = load("res://Themes/UITheme.tres")
 	create_item("UsernameLabel", Label, Vector2(175,300), $LoginSystem)
 	$LoginSystem/UsernameLabel.text = "Username:"
 	$LoginSystem/UsernameLabel.self_modulate = Color.black
@@ -105,7 +105,7 @@ func text_fields():
 
 
 func log_reg_buttons():
-	var theme = load("res://Themes/ButtonTheme.tres")
+	var theme = load("res://Themes/UITheme.tres")
 	create_item("LoginButton", Button, Vector2(100,445), $LoginSystem, Vector2(80,10))
 	$LoginSystem/LoginButton.text = "Login"
 	$LoginSystem/LoginButton.mouse_default_cursor_shape = CURSOR_POINTING_HAND
@@ -140,7 +140,7 @@ func set_background():
 
 
 func add_recipe_button():
-	var theme = load("res://Themes/ButtonTheme.tres")
+	var theme = load("res://Themes/UITheme.tres")
 	create_item("AddRecipe", Button, Vector2(205,707), self, Vector2(40,20))
 	$AddRecipe.text = "+"
 	$AddRecipe.mouse_default_cursor_shape = CURSOR_POINTING_HAND
@@ -148,11 +148,16 @@ func add_recipe_button():
 	$AddRecipe.visible = false
 
 
-func create_item_list():
-	create_item("RecipeList", ItemList, Vector2(), self)
-	var theme = load("res://Themes/ButtonTheme.tres")
-	yield(get_tree().create_timer(0.2),"timeout")
-	$Recipelist.set_theme(theme)
+func create_step_display():
+	create_item("Panel", Panel, Vector2(0,234), self, Vector2(450, 300))
+	var theme = load("res://Themes/UITheme.tres")
+	$Panel.set_theme(theme)
+	create_item("StepsList", TextEdit, Vector2(35,23), $Panel, Vector2(386,250))
+	$Panel/StepsList.set_theme(theme)
+	$Panel/StepsList.readonly = true
+	create_item("CloseButton", Button, Vector2(426,5), $Panel)
+	$Panel/CloseButton.text = "X"
+	$Panel/CloseButton.connect("pressed", self, "_on_close_button_pressed")
 
 
 func recipe_addition_window():
@@ -161,7 +166,7 @@ func recipe_addition_window():
 	yield(get_tree().create_timer(0.05),"timeout")
 	create_item("AddRecipeWindow", WindowDialog, Vector2(100,250), self, Vector2(250,500))
 	$AddRecipeWindow.window_title = "Add A Recipe"
-	var theme = load("res://Themes/ButtonTheme.tres")
+	var theme = load("res://Themes/UITheme.tres")
 	$AddRecipeWindow.set_theme(theme)
 	$AddRecipeWindow.show()
 	
@@ -198,6 +203,18 @@ func recipe_addition_window():
 	$AddRecipeWindow/SaveButton.connect("pressed", self, "_on_save_pressed")
 	$AddRecipeWindow/SaveButton.text = "Save"
 	$AddRecipeWindow/SaveButton.mouse_default_cursor_shape = CURSOR_POINTING_HAND
+
+
+func create_browsing_window():
+	create_item("ImageBrowse", FileDialog, Vector2(16,204), self, Vector2(416,368))
+	$ImageBrowse.popup_exclusive = true
+	$ImageBrowse.mode = 0
+	$ImageBrowse.access = 2
+	$ImageBrowse.set_filters(PoolStringArray(["*.png ; PNG Images", "*.jpg ; JPG Images", "*.jpeg ; JPEG Images"]))
+	$ImageBrowse.window_title = "Select an Image"
+	$ImageBrowse.show()
+	$ImageBrowse.connect("file_selected", self, "_on_file_selected")
+
 
 
 ####### REUSABLE #######
@@ -321,6 +338,8 @@ func _on_add_recipe_pressed():
 
 
 func _on_recipe_activated(idx):
+	create_step_display()
+	$Panel/StepsList.text = recipe.Steps[idx]
 	print("recipe activated")
 
 
@@ -329,11 +348,35 @@ func _on_cancel_pressed():
 
 
 func _on_save_pressed():
-	print("saving...")
+	recipe.FoodImage.append($AddRecipeWindow/ImageDirectory.text)
+	recipe.Name.append($AddRecipeWindow/RecipeName.text)
+	recipe.Steps.append($AddRecipeWindow/RecipeSteps.text)
+	save_recipe()
+	$AddRecipeWindow.queue_free()
+	setup_recipes()
+	print("saving recipe...")
 
 
 func _on_browse_pressed():
+	create_browsing_window()
 	print("browsing files")
+
+
+func _on_file_selected(path):
+	$AddRecipeWindow/ImageDirectory.text = path
+	print(path)
+
+
+func _nothing_selected():
+	$RecipeList.unselect_all()
+
+
+func _item_activated(idx):
+	print(recipe.Steps[idx])
+
+
+func _on_close_button_pressed():
+	$Panel.queue_free()
 
 
 
@@ -382,10 +425,12 @@ func setup_recipes():
 		
 	else:
 		create_item("RecipeList", ItemList, Vector2(100,250), self, Vector2(250,450))
-		var theme = load("res://Themes/ButtonTheme.tres")
+		var theme = load("res://Themes/UITheme.tres")
 		$RecipeList.theme = theme
 		$RecipeList.fixed_icon_size = Vector2(64,64)
 		$RecipeList.connect("item_activated", self, "_on_recipe_activated")
+		$RecipeList.connect("nothing_selected", self, "_nothing_selected")
+		$RecipeList.connect("item_activated", self, "_item_activated")
 		
 	$RecipeList.clear()
 	var i = 0
@@ -397,6 +442,9 @@ func setup_recipes():
 		tex.create_from_image(img)
 		$RecipeList.add_item(recipe.Name[i], tex)
 		i+=1
+
+
+
 
 
 
