@@ -5,6 +5,7 @@ extends Control
 
 var current_user = "Joker"
 var user_index
+var item
 
 
 ####### DATA VARIABLES #######
@@ -71,6 +72,7 @@ func Create_Colour_Picker():
 	create_item("ColourPicker", ColorPickerButton, Vector2(367,747), self, Vector2(26,20))
 	$ColourPicker.visible = false
 	$ColourPicker.mouse_default_cursor_shape = CURSOR_POINTING_HAND
+	
 	create_item("ColourPickerLabel", Label, Vector2(330,727), self)
 	$ColourPickerLabel.text = "Profile Colour"
 	var font = DynamicFont.new()
@@ -89,14 +91,17 @@ func text_fields():
 	create_item("UsernameLabel", Label, Vector2(175,300), $LoginSystem)
 	$LoginSystem/UsernameLabel.text = "Username:"
 	$LoginSystem/UsernameLabel.self_modulate = Color.black
+	
 	create_item("UsernameField", LineEdit, Vector2(100,320), $LoginSystem, Vector2(250,10))
 	$LoginSystem/UsernameField.placeholder_text = "Username"
 	$LoginSystem/UsernameField.set_theme(theme)
 	$LoginSystem/UsernameField.grab_focus()
 	$LoginSystem/UsernameField.caret_blink = true
+	
 	create_item("PasswordLabel", Label, Vector2(175,380), $LoginSystem)
 	$LoginSystem/PasswordLabel.text = "Password:"
 	$LoginSystem/PasswordLabel.self_modulate = Color.black
+	
 	create_item("PasswordField", LineEdit, Vector2(100,400), $LoginSystem, Vector2(250,10))
 	$LoginSystem/PasswordField.placeholder_text = "Password"
 	$LoginSystem/PasswordField.secret = true
@@ -110,6 +115,7 @@ func log_reg_buttons():
 	$LoginSystem/LoginButton.text = "Login"
 	$LoginSystem/LoginButton.mouse_default_cursor_shape = CURSOR_POINTING_HAND
 	$LoginSystem/LoginButton.set_theme(theme)
+	
 	create_item("RegisterButton", Button, Vector2(270,445), $LoginSystem, Vector2(80,10))
 	$LoginSystem/RegisterButton.text = "Register"
 	$LoginSystem/RegisterButton.mouse_default_cursor_shape = CURSOR_POINTING_HAND
@@ -134,6 +140,7 @@ func set_background():
 	create_item("BG", TextureRect,Vector2(0,0), self)
 	create_texture("user://Background01.png", $BG)
 	$BG.self_modulate = Color.gray
+	
 	create_item("BG2", TextureRect,Vector2(0,0), self)
 	create_texture("user://Background02.png", $BG2)
 	$BG2.self_modulate = "8ac2ff"
@@ -152,9 +159,11 @@ func create_step_display():
 	create_item("Panel", Panel, Vector2(0,234), self, Vector2(450, 300))
 	var theme = load("res://Themes/UITheme.tres")
 	$Panel.set_theme(theme)
+	
 	create_item("StepsList", TextEdit, Vector2(35,23), $Panel, Vector2(386,250))
 	$Panel/StepsList.set_theme(theme)
 	$Panel/StepsList.readonly = true
+	
 	create_item("CloseButton", Button, Vector2(426,5), $Panel)
 	$Panel/CloseButton.text = "X"
 	$Panel/CloseButton.connect("pressed", self, "_on_close_button_pressed")
@@ -275,8 +284,6 @@ func _on_login_pressed():
 						var tmp = data.FavColour[user_index]
 						tmp = tmp.split(",")
 						data.FavColour[user_index] = tmp
-						
-
 
 					else:
 						pass
@@ -289,6 +296,7 @@ func _on_login_pressed():
 							data.FavColour[user_index][2],
 							data.FavColour[user_index][3])
 					print(data.FavColour[user_index])
+			$LoginSystem.queue_free()
 		
 		elif $LoginSystem/UsernameField.text == "":
 			print("invalid user")
@@ -375,8 +383,20 @@ func _item_activated(idx):
 	print(recipe.Steps[idx])
 
 
+func _on_item_selected(idx):
+	item = idx
+
+
 func _on_close_button_pressed():
 	$Panel.queue_free()
+
+
+func _on_delete_pressed():
+	recipe.Name.remove(item)
+	recipe.FoodImage.remove(item)
+	recipe.Steps.remove(item)
+	save_recipe()
+	setup_recipes()
 
 
 
@@ -431,8 +451,20 @@ func setup_recipes():
 		$RecipeList.connect("item_activated", self, "_on_recipe_activated")
 		$RecipeList.connect("nothing_selected", self, "_nothing_selected")
 		$RecipeList.connect("item_activated", self, "_item_activated")
+		$RecipeList.connect("item_selected", self, "_on_item_selected")
 		
 	$RecipeList.clear()
+	if has_node("./DeleteButton"):
+		$DeleteButton.queue_free()
+		yield(get_tree().create_timer(0.1),"timeout")
+		
+	if recipe.Name:
+		var theme = load("res://Themes/UITheme.tres")
+		create_item("DeleteButton", Button, Vector2(100,707), self, Vector2(80,20))
+		$DeleteButton.text = "Delete"
+		$DeleteButton.set_theme(theme)
+		$DeleteButton.connect("pressed", self, "_on_delete_pressed")
+
 	var i = 0
 	while i <= recipe.Name.size()-1:
 		var img = Image.new()
@@ -442,7 +474,7 @@ func setup_recipes():
 		tex.create_from_image(img)
 		$RecipeList.add_item(recipe.Name[i], tex)
 		i+=1
-
+	
 
 
 
