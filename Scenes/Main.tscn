@@ -3,8 +3,10 @@
 [ext_resource path="res://Scripts/Main.gd" type="Script" id=1]
 
 [node name="Main" type="Control"]
-anchor_right = 1.0
-anchor_bottom = 1.0
+margin_left = 1.29465
+margin_top = 0.431549
+margin_right = 1.29465
+margin_bottom = 0.431519
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
