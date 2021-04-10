@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=4 format=2]
+[gd_resource type="Theme" load_steps=8 format=2]
 
 [sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 0.3078, 0.43453, 0.57, 1 )
@@ -8,7 +8,7 @@ corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxFlat" id=2]
-bg_color = Color( 0.54, 0.762333, 1, 1 )
+bg_color = Color( 0.541176, 0.760784, 1, 1 )
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
@@ -20,6 +20,25 @@ corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id=4]
+bg_color = Color( 0.239216, 0.239216, 0.239216, 0.713726 )
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id=5]
+bg_color = Color( 1, 1, 1, 1 )
+anti_aliasing_size = 5
+
+[sub_resource type="StyleBoxFlat" id=7]
+bg_color = Color( 1, 1, 1, 1 )
+
+[sub_resource type="StyleBoxFlat" id=6]
+bg_color = Color( 0.239216, 0.239216, 0.239216, 1 )
+border_width_top = 20
+expand_margin_top = 20.0
 
 [resource]
 Button/colors/font_color = Color( 0, 0, 0, 1 )
@@ -145,7 +164,7 @@ HSplitContainer/constants/separation = 12
 HSplitContainer/icons/grabber = null
 HSplitContainer/styles/bg = null
 Icons/icons/close = null
-ItemList/colors/font_color = Color( 0, 0, 0, 1 )
+ItemList/colors/font_color = Color( 1, 1, 1, 1 )
 ItemList/colors/font_color_selected = Color( 0, 0, 0, 1 )
 ItemList/colors/guide_color = Color( 0, 0, 0, 1 )
 ItemList/constants/hseparation = 4
@@ -153,12 +172,25 @@ ItemList/constants/icon_margin = 4
 ItemList/constants/line_separation = 2
 ItemList/constants/vseparation = 2
 ItemList/fonts/font = null
-ItemList/styles/bg = null
+ItemList/styles/bg = SubResource( 4 )
 ItemList/styles/bg_focus = null
 ItemList/styles/cursor = null
 ItemList/styles/cursor_unfocused = null
 ItemList/styles/selected = null
 ItemList/styles/selected_focus = null
+LineEdit/colors/clear_button_color = Color( 0.88, 0.88, 0.88, 1 )
+LineEdit/colors/clear_button_color_pressed = Color( 1, 1, 1, 1 )
+LineEdit/colors/cursor_color = Color( 0, 0, 0, 1 )
+LineEdit/colors/font_color = Color( 0, 0, 0, 1 )
+LineEdit/colors/font_color_selected = Color( 0, 0, 0, 1 )
+LineEdit/colors/font_color_uneditable = Color( 0.88, 0.88, 0.88, 0.5 )
+LineEdit/colors/selection_color = Color( 0.49, 0.49, 0.49, 1 )
+LineEdit/constants/minimum_spaces = 12
+LineEdit/fonts/font = null
+LineEdit/icons/clear = null
+LineEdit/styles/focus = null
+LineEdit/styles/normal = SubResource( 5 )
+LineEdit/styles/read_only = null
 LinkButton/colors/font_color = Color( 0, 0, 0, 1 )
 LinkButton/colors/font_color_hover = Color( 0, 0, 0, 1 )
 LinkButton/colors/font_color_pressed = Color( 0, 0, 0, 1 )
@@ -300,7 +332,7 @@ TextEdit/colors/mark_color = Color( 0, 0, 0, 1 )
 TextEdit/colors/member_variable_color = Color( 0, 0, 0, 1 )
 TextEdit/colors/number_color = Color( 0, 0, 0, 1 )
 TextEdit/colors/safe_line_number_color = Color( 0, 0, 0, 1 )
-TextEdit/colors/selection_color = Color( 0, 0, 0, 1 )
+TextEdit/colors/selection_color = Color( 0.490196, 0.490196, 0.490196, 1 )
 TextEdit/colors/symbol_color = Color( 0, 0, 0, 1 )
 TextEdit/colors/word_highlighted_color = Color( 0, 0, 0, 1 )
 TextEdit/constants/completion_lines = 7
@@ -314,7 +346,7 @@ TextEdit/icons/space = null
 TextEdit/icons/tab = null
 TextEdit/styles/completion = null
 TextEdit/styles/focus = null
-TextEdit/styles/normal = null
+TextEdit/styles/normal = SubResource( 7 )
 TextEdit/styles/read_only = null
 ToolButton/colors/font_color = Color( 0, 0, 0, 1 )
 ToolButton/colors/font_color_disabled = Color( 0, 0, 0, 1 )
@@ -400,4 +432,4 @@ WindowDialog/constants/title_height = 20
 WindowDialog/fonts/title_font = null
 WindowDialog/icons/close = null
 WindowDialog/icons/close_highlight = null
-WindowDialog/styles/panel = null
+WindowDialog/styles/panel = SubResource( 6 )
