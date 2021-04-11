@@ -107,6 +107,10 @@ func text_fields():
 	$LoginSystem/PasswordField.secret = true
 	$LoginSystem/PasswordField.set_theme(theme)
 	$LoginSystem/PasswordField.caret_blink = true
+	
+	create_item("InfoLabel", Label, Vector2(100,480), $LoginSystem)
+	$LoginSystem/InfoLabel.text = ""
+	$LoginSystem/InfoLabel.self_modulate = Color.black
 
 
 func log_reg_buttons():
@@ -299,24 +303,30 @@ func _on_login_pressed():
 			$LoginSystem.queue_free()
 		
 		elif $LoginSystem/UsernameField.text == "":
+			$LoginSystem/InfoLabel.text = "Invalid user"
 			print("invalid user")
 		
 		else:
+			$LoginSystem/InfoLabel.text = "Incorrect username or password"
 			print("Incorrect username or password")
 			
 	else:
+		$LoginSystem/InfoLabel.text = "No user found, please register"
 		print("No user found, please register")
 
 
 func _on_register_pressed():
 	if $LoginSystem/UsernameField.text in data.User:
+		$LoginSystem/InfoLabel.text = "User already exists"
 		print("User already exists")
 
 	elif " " in $LoginSystem/UsernameField.text or $LoginSystem/UsernameField.text == "":
+		$LoginSystem/InfoLabel.text = "Username can not have spaces or be blank"
 		print("Username can not have spaces or be blank")
 		
 	else:
 		if $LoginSystem/PasswordField.text == "":
+			$LoginSystem/InfoLabel.text = "User accounts need a password"
 			print("User accounts need a password")
 			
 		else:
@@ -326,6 +336,7 @@ func _on_register_pressed():
 			print(data)
 			$LoginSystem/UsernameField.text = ""
 			$LoginSystem/PasswordField.text = ""
+			$LoginSystem/InfoLabel.text = "Registered User"
 			print("Registered user")
 			save_data()
 
